@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <language_definitions>
-  
   <language processor="6303"
-            endian="little"
-            size="16"
-            variant="default"
-            version="1.0"
-            slafile="6303.sla"
-            processorspec="6303.pspec"
-            manualindexfile="../manuals/6303.idx"
-            id="6303:LE:16:default">
-    <description>6303 Microcontroller Family</description>
-    <compiler name="default" spec="6303.cspec" id="default"/>
-    <external_name tool="IDA-PRO" name="m6303"/>
-	<external_name tool="IDA-PRO" name="m65c02"/>
-  </language>
-  
-  <!-- The following entry has a very misleading language id but
-       can not be removed since it may have already been referenced.
-       This entry has been marked deprecated to avoid its use in the future.
-   -->
-  <language deprecated="true"
-  			processor="6303"
-            endian="little"
+            endian="big"
             size="16"
             variant="default"
             version="1.0"
@@ -32,6 +10,6 @@
             id="6303:BE:16:default">
     <description>6303 Microcontroller Family</description>
     <compiler name="default" spec="6303.cspec" id="default"/>
+	<external_name tool="IDA-PRO" name="6303"/>
   </language>
-  
 </language_definitions>
