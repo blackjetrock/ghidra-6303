@@ -738,17 +738,22 @@ macro PushEntireState()
         arithmeticShiftRight(OP1);
 }
 
-:LSLA 	is op=0x48
+:ASLA 	is op=0x48
 {
         logicalShiftLeft(A);
 }
 
-:LSLB 	is op=0x58
+:ASLB 	is op=0x58
 {
         logicalShiftLeft(B);
 }
 
-:LSL OP1    is (op=0x08 | op=0x68 | op=0x78) ... & OP1
+:INX    is op=0x08
+{
+        increment(X);
+}
+
+:ASL OP1    is (op=0x68 | op=0x78) ... & OP1
 {
         logicalShiftLeft(OP1);
 }
@@ -762,8 +767,13 @@ macro PushEntireState()
 {
         rotateLeftWithCarry(B);
 }
- 
-:ROL OP1    is (op=0x09 | op=0x69 | op=0x79) ... & OP1
+
+:DEX is op=0x09
+{
+        decrement(X);
+}
+
+:ROL OP1    is (op=0x69 | op=0x79) ... & OP1
 {
         rotateLeftWithCarry(OP1);
 }
@@ -777,8 +787,13 @@ macro PushEntireState()
 {
         decrement(B);
 }
- 
-:DEC OP1    is (op=0x0A | op=0x6A | op=0x7A) ... & OP1
+
+:CLV	is op=0x0A
+{
+	$(V)=0;
+}
+
+:DEC OP1    is (op=0x6A | op=0x7A) ... & OP1
 {
         decrement(OP1);
 }
