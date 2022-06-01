@@ -1140,6 +1140,19 @@ macro PushEntireState()
         compare(B, OP1);
 }
 
+:CBA         is op=0x11
+{
+        compare(A, B);
+}
+
+:XGDX        is op=0x18
+{
+        local tmp:2 = X;
+        X = D;
+	D = tmp;
+
+}
+
 :SBCA OP1    is (op=0x82 | op=0x92 | op=0xA2 | op=0xB2) ... & OP1
 {
         subtractionWithCarry(A, OP1);
@@ -1303,8 +1316,10 @@ macro PushEntireState()
 :OIM "#"imm8,imm8b  is op=0x72; imm8 ; imm8b
 {
 }
+
 :OIM "#"imm8,imm8b","^X  is op=0x62; imm8 ; imm8b; X
 {
+
 }
 
 :AIM "#"imm8,imm8b  is op=0x71; imm8 ; imm8b
