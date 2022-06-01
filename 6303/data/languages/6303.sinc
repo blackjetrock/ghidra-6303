@@ -1292,7 +1292,18 @@ macro PushEntireState()
         storeRegister(X, OP2);
 }
 
+:EIM "#"imm8,imm8b  is op=0x75; imm8 ; imm8b
+{
+}
+
+:EIM "#"imm8,imm8b","^X  is op=0x65; imm8 ; imm8b; X
+{
+}
+
 :OIM "#"imm8,imm8b  is op=0x72; imm8 ; imm8b
+{
+}
+:OIM "#"imm8,imm8b","^X  is op=0x62; imm8 ; imm8b; X
 {
 }
 
@@ -1301,6 +1312,13 @@ macro PushEntireState()
 }
 
 :AIM "#"imm8,imm8b","^X  is op=0x61; imm8 ; imm8b; X
+{
+}
+:TIM "#"imm8,imm8b  is op=0x7B; imm8 ; imm8b
+{
+}
+
+:TIM "#"imm8,imm8b","^X  is op=0x6B; imm8 ; imm8b; X
 {
 }
 
