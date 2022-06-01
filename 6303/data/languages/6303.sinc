@@ -61,6 +61,7 @@ define token opbyte (8)
 
 define token data8 (8)
     imm8      = (0,7)
+    imm8b     = (0,7)
     simm8     = (0,7) signed
     simm5     = (0,4) signed
     idxMode   = (0,4)
@@ -380,6 +381,7 @@ OP2: imm16      is (op47=7 | op47=0xB | op47=0xF); imm16
 {
     export *:2 imm16;
 }
+
 
 ################################################################
 # Macros
@@ -807,8 +809,13 @@ macro PushEntireState()
 {
         increment(B);
 }
- 
-:INC OP1    is (op=0x0C | op=0x6C | op=0x7C) ... & OP1
+
+:CLC	is op=0x0C
+{
+	$(C)=0;
+}
+
+:INC OP1    is (op=0x6C | op=0x7C) ... & OP1
 {
         increment(OP1);
 }
@@ -822,13 +829,23 @@ macro PushEntireState()
 {
         test(B);
 }
- 
-:TST OP1    is (op=0x0D | op=0x6D | op=0x7D) ... & OP1
+
+:SEC     is op=0x0D
+{
+	$(C)=1;
+}
+
+:TST OP1    is (op=0x6D | op=0x7D) ... & OP1
 {
         test(OP1);
 }
- 
-:JMP OP2    is (op=0x0E | op=0x6E | op=0x7E) ... & OP2
+
+:CLI     is op=0x0E
+{
+	$(I)=0;
+}
+
+:JMP OP2    is (op=0x6E | op=0x7E) ... & OP2
 {
         local target = OP2;
         goto [target];
@@ -843,8 +860,13 @@ macro PushEntireState()
 {
         clear(B);
 }
- 
-:CLR OP1    is (op=0x0F | op=0x6F | op=0x7F) ... & OP1
+
+:SEI     is op=0x0F
+{
+	$(I)=1;
+}
+
+:CLR OP1    is (op=0x6F | op=0x7F) ... & OP1
 {
         clear(OP1);
 }
@@ -853,24 +875,18 @@ macro PushEntireState()
 # Opcode 0x10 - 0x1F, misc. addressing
 ################################################################
 
-:NOP    is op=0x12
+:NOP    is op=0x01
 {
 }
 
-:SYNC    is op=0x13
+:TAB    is op=0x16
 {
+	B=A;
 }
 
-:LBRA REL2    is op=0x16; REL2
+:TBA    is op=0x17
 {
-        goto REL2;
-}
-
-:LBSR REL2    is op=0x17; REL2 
-{
-        local tmp:2 = inst_next;
-        Push2(S, tmp);
-        call REL2;
+	A=B;
 }
 
 :DAA    is op=0x19
@@ -905,19 +921,8 @@ macro PushEntireState()
            setNZFlags(A);
 }
 
-:ORCC IMMED1    is op=0x1A; IMMED1
+:SLP       is op=0x1A
 {
-    CC = CC | IMMED1;
-}
-
-:ANDCC IMMED1    is op=0x1C; IMMED1
-{
-    CC = CC & IMMED1;
-}
-
-:SEX    is op=0x1D
-{
-    D = sext(B);
 }
 
 ################################################################
@@ -1015,24 +1020,49 @@ macro PushEntireState()
 # Opcode 0x30 - 0x3F, misc. addressing
 ################################################################
 
-:LEAX EA    is op=0x30; EA
+:TSX     is op=0x30
 {
-        X = EA;
+        X=S;
 }
 
-:LEAY EA    is op=0x31; EA
+:INS    is op=0x31
 {
-        Y = EA;
+        increment(S);
 }
 
-:LEAS EA    is op=0x32; EA
+:PULA   is op=0x32
 {
-        S = EA;
+        Pull1(S,A);
 }
 
-:LEAU EA    is op=0x33; EA
+:PULB   is op=0x33
 {
-        U = EA;
+        Pull1(S,B);
+}
+
+:DES    is op=0x34
+{
+        decrement(S);
+}
+
+:TXS     is op=0x35
+{
+        S=X;
+}
+
+:PSHA   is op=0x36
+{
+        Push1(S,A);
+}
+
+:PSHB   is op=0x37
+{
+        Push1(S,B);
+}
+
+:PULX   is op=0x38
+{
+        Pull2(S,X);
 }
 
 :RTS    is op=0x39
@@ -1058,10 +1088,9 @@ macro PushEntireState()
         return [addr];
 }
 
-:CWAI IMMED1    is op=0x3C; IMMED1
+:PSHX   is op=0x3C
 {
-        CC = CC & IMMED1;
-        PushEntireState();
+        Push2(S,X);
 }
 
 :MUL    is op=0x3D
@@ -1243,164 +1272,36 @@ macro PushEntireState()
         storeRegister(D, OP2);
 }
 
-:LDX OP2    is (op=0x8E | op=0x9E | op=0xAE | op=0xBE) ... & OP2
-{
-        loadRegister(X, OP2);
-}
-
-:LDU OP2    is (op=0xCE | op=0xDE | op=0xEE | op=0xFE) ... & OP2
-{
-        loadRegister(U, OP2);
-}
-
-:STX OP2    is (op=0x9F | op=0xAF | op=0xBF) ... & OP2
-{
-        storeRegister(X, OP2);
-}
-
-:STU OP2    is (op=0xDF | op=0xEF | op=0xFF) ... & OP2
-{
-        storeRegister(X, OP2);
-}
-
-################################################################
-# Page 2 Opcodes (prefix 0x10)
-################################################################
-:LBRN REL2    is PAGE2; op=0x21; REL2
-{
-}
-
-:LBHI REL2    is PAGE2; op=0x22; REL2
-{
-        local tmp = $(C) + $(Z);
-        if (tmp == 0) goto REL2;
-}
-
-:LBLS REL2    is PAGE2; op=0x23; REL2
-{
-        local tmp = $(C) + $(Z);
-        if (tmp) goto REL2;
-}
-
-:LBCC REL2    is PAGE2; op=0x24; REL2
-{
-        if ($(C) == 0) goto REL2;
-}
-
-#:LBLO REL2    is PAGE2; op=0x25; REL2 # see LBCS
-
-:LBCS REL2    is PAGE2; op=0x25; REL2
-{
-        if ($(C)) goto REL2;
-}
-
-:LBNE REL2     is PAGE2; op=0x26; REL2
-{
-        if ($(Z) == 0) goto REL2;
-}
-
-:LBEQ REL2    is PAGE2; op=0x27; REL2
-{
-        if ($(Z)) goto REL2;
-}
-
-:LBVC REL2    is PAGE2; op=0x28; REL2
-{
-        if ($(V) == 0) goto REL2;
-}
-
-:LBVS REL2    is PAGE2; op=0x29; REL2
-{
-        if ($(V)) goto REL2;
-}
-
-:LBPL REL2    is PAGE2; op=0x2A; REL2
-{
-        if ($(N) == 0) goto REL2;
-}
-
-:LBMI REL2    is PAGE2; op=0x2B; REL2
-{
-        if ($(N)) goto REL2;
-}
-
-:LBGE REL2    is PAGE2; op=0x2C; REL2
-{
-        if ($(N) == $(V)) goto REL2;
-}
-
-:LBLT REL2    is PAGE2; op=0x2D; REL2
-{
-        local tmp = $(C) ^ $(Z);
-        if (tmp) goto REL2;
-}
-
-:LBGT REL2    is PAGE2; op=0x2E; REL2
-{
-        if (($(N) == $(V)) & $(C)) goto REL2;
-}
-
-:LBLE REL2     is PAGE2; op=0x2F; REL2
-{
-        local tmp = $(N) ^ $(V);
-        if (tmp | $(Z)) goto REL2;
-}
-
-:SWI2    is PAGE2; op=0x3F
-{
-        PushEntireState();
-        tmp:2 = $(SWI2_VECTOR);
-        call [tmp];
-}
-
-:CMPD OP2    is PAGE2; (op=0x83 | op=0x93 | op=0xA3 | op=0xB3) ... & OP2
-{
-        compare(D, OP2);
-}
-
-:CMPY OP2    is PAGE2; (op=0x8C | op=0x9C | op=0xAC | op=0xBC) ... & OP2
-{
-        compare(Y, OP2);
-}
-
-:LDY OP2    is PAGE2; (op=0x8E | op=0x9E | op=0xAE | op=0xBE) ... & OP2
-{
-        loadRegister(Y, OP2);
-}
-
-:STY OP2    is PAGE2; (op=0x9F | op=0xAF | op=0xBF) ... & OP2
-{
-        storeRegister(Y, OP2);
-}
-
-:LDS OP2    is PAGE2; (op=0xCE | op=0xDE | op=0xEE | op=0xFE) ... & OP2
+:LDS OP2    is (op=0x8E | op=0x9E | op=0xAE | op=0xBE) ... & OP2
 {
         loadRegister(S, OP2);
 }
 
-:STS OP2    is PAGE2; (op=0xDF | op=0xEF | op=0xFF) ... & OP2
+:LDX OP2    is (op=0xCE | op=0xDE | op=0xEE | op=0xFE) ... & OP2
+{
+        loadRegister(X, OP2);
+}
+
+:STS OP2    is (op=0x9F | op=0xAF | op=0xBF) ... & OP2
 {
         storeRegister(S, OP2);
 }
 
-################################################################
-# Page 3 Opcodes (prefix 0x11)
-################################################################
-
-:SWI3    is PAGE3; op=0x3F
+:STX OP2    is (op=0xDF | op=0xEF | op=0xFF) ... & OP2
 {
-        PushEntireState();
-        tmp:2 = $(SWI3_VECTOR);
-        call [tmp];
+        storeRegister(X, OP2);
 }
 
-:CMPU OP2    is PAGE3; (op=0x83 | op=0x93 | op=0xA3 | op=0xB3) ... & OP2
+:OIM "#"imm8,imm8b  is op=0x72; imm8 ; imm8b
 {
-        compare(U, OP2);
 }
 
-:CMPS OP2    is PAGE3; (op=0x8C | op=0x9C | op=0xAC | op=0xBC) ... & OP2
+:AIM "#"imm8,imm8b  is op=0x71; imm8 ; imm8b
 {
-        compare(S, OP2);
 }
+
+:AIM "#"imm8,imm8b","^X  is op=0x61; imm8 ; imm8b; X
+{
+}
+
 
