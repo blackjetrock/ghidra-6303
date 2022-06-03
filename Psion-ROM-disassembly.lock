@@ -1,9 +1,0 @@
-#Ghidra Lock File
-#Thu Jun 02 06:55:42 BST 2022
-OS\ Name=Linux
-OS\ Version=5.4.0-110-generic
-Username=menadue
-Hostname=project
-<META>\ Supports\ File\ Channel\ Locking=Channel Lock
-OS\ Architecture=amd64
-Timestamp=6/2/22, 6\:55 AM
