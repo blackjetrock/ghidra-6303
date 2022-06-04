@@ -650,6 +650,14 @@ macro logicalShiftLeft(op)
         $(N) = (op >> 7);
 }
 
+macro logicalShiftLeft16(op)
+{
+        $(C) = ((op &0x8000) != 0);
+        op = op << 1;
+        $(Z) = (op == 0);
+        $(N) = ((op & 0x8000) != 0);
+}
+
 macro increment(op)
 {
         $(V) = (op == 0x7F);
@@ -942,6 +950,11 @@ macro PushEntireState()
 :ASLB 	is op=0x58
 {
         logicalShiftLeft(B);
+}
+
+:ASLD 	is op=0x05
+{
+        logicalShiftLeft16(D);
 }
 
 :INX    is op=0x08
@@ -1454,6 +1467,12 @@ macro PushEntireState()
 {
         setHFlag(A, OP1);
         addition(A, OP1);
+}
+
+:ABA    is op=0x1B
+{
+        setHFlag(A, B);
+        addition(A, B);
 }
 
 :ADDB OP1    is (op=0xCB | op=0xDB | op=0xEB | op=0xFB) ... & OP1
