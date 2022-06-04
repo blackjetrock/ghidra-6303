@@ -1,0 +1,15 @@
+# sleigh specification file for Hitachi 6303
+# Taken from MC6800 files
+# Different instruction set to 68xx family but similar enough
+# for it to be a good basis
+# This configuration has extra decoding for the Psion Organiser 2
+#
+# SWI=>   OS <osname>
+#
+
+@define H6303PSION ""
+
+@include "6303.sinc"
+#@include "6303_push.sinc"
+#@include "6303_pull.sinc"
+@include "6303_exg_tfr.sinc"

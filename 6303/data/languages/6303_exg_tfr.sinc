@@ -4,7 +4,7 @@
 # EXG, TFR helper
 ################################################################
 
-@ifdef H6303
+#@ifdef H6303
 EXG_r0Tmp: D    is reg0_exg=0 & D   { exg16_r0 = D; }
 EXG_r0Tmp: X    is reg0_exg=1 & X   { exg16_r0 = X; }
 EXG_r0Tmp: S    is reg0_exg=4 & S   { exg16_r0 = S; }
@@ -44,7 +44,7 @@ EXG_r1Set: B    is reg1_exg=9 & B   { B = exg8l_r0; }
 EXG_r1Set: CC   is reg1_exg=10 & CC { CC = exg8l_r0; }
 EXG_r1Set: 0    is reg1_exg=12      {  }
 EXG_r1Set: 0    is reg1_exg=13      {  }
-@endif
+#@endif
 
 EXG_GOTO: is reg0_exg=5 | reg1_exg=5 { goto [PC]; }
 EXG_GOTO: is reg0_exg & reg1_exg     {  } # PC not set

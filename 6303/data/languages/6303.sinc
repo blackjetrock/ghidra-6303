@@ -77,6 +77,8 @@ define token data8 (8)
     imm87     = (7,7)
     reg0_exg  = (4,7)
     reg1_exg  = (0,3)
+    pushbit   = (7,7)
+    vmask     = (0,6)
 ;
 
 define token data (16)
@@ -382,6 +384,193 @@ OP2: imm16      is (op47=7 | op47=0xB | op47=0xF); imm16
     export *:2 imm16;
 }
 
+################################################################
+# Psion specific decodes
+################################################################
+
+OSOP: "AL$FREE"	    is imm8=0x00 {}
+OSOP: "AL$GRAB"	    is imm8=0x01 {}
+OSOP: "AL$GROW"	    is imm8=0x02 {}
+OSOP: "AL$REPL"	    is imm8=0x03 {}
+OSOP: "AL$SHNK"	    is imm8=0x04 {}
+OSOP: "AL$SIZE"	    is imm8=0x05 {}
+OSOP: "AL$ZERO"	    is imm8=0x06 {}
+OSOP: "AM$ENTR"	    is imm8=0x9E {}
+OSOP: "BT$NMDN"	    is imm8=0x07 {}
+OSOP: "BT$NMEN"	    is imm8=0x08 {}
+OSOP: "BT$NOF"	    is imm8=0x09 {}
+OSOP: "BT$NON"	    is imm8=0x0A {}
+OSOP: "BT$PPRG" ";(Push)" vmask	    is imm8=0x0B ; pushbit=0 & vmask {}
+OSOP: "BT$PPRG" ";(Pop)" vmask	    is imm8=0x0B ; pushbit=1 & vmask {}
+OSOP: "BT$SWOF"	    is imm8=0x0C {}
+OSOP: "BT$TOFF"	    is imm8=0x81 {}
+OSOP: "BZ$ALRM"	    is imm8=0x0D {}
+OSOP: "BZ$BELL"	    is imm8=0x0E {}
+OSOP: "BZ$TONE"	    is imm8=0x0F {}
+OSOP: "CA$ENTR"	    is imm8=0xA0 {}
+OSOP: "DI$ENTR"	    is imm8=0xA7 {}
+OSOP: "DP$CPRN"	    is imm8=0x84 {}
+OSOP: "DP$CSET"	    is imm8=0x83 {}
+OSOP: "DP$EMIT"	    is imm8=0x10 {}
+OSOP: "DP$MSET"	    is imm8=0x82 {}
+OSOP: "DP$PRNT"	    is imm8=0x11 {}
+OSOP: "DP$PVEW"	    is imm8=0xA3 {}
+OSOP: "DP$REST"	    is imm8=0x12 {}
+OSOP: "DP$SAVE"	    is imm8=0x13 {}
+OSOP: "DP$STAT"	    is imm8=0x14 {}
+OSOP: "DP$UDG"	    is imm8=0x85 {}
+OSOP: "DP$VIEW"	    is imm8=0x15 {}
+OSOP: "DP$WRDY"	    is imm8=0x16 {}
+OSOP: "DV$BOOT"	    is imm8=0x17 {}
+OSOP: "DV$CLER"	    is imm8=0x18 {}
+OSOP: "DV$LKUP"	    is imm8=0x19 {}
+OSOP: "DV$LOAD"	    is imm8=0x1A {}
+OSOP: "DV$VECT"	    is imm8=0x1B {}
+OSOP: "ED$EDIT"	    is imm8=0x1C {}
+OSOP: "ED$EPOS"	    is imm8=0x1D {}
+OSOP: "ED$VIEW"	    is imm8=0x1E {}
+OSOP: "ER$LKUP"	    is imm8=0x1F {}
+OSOP: "ER$MESS"	    is imm8=0x20 {}
+OSOP: "ER$PRNT"	    is imm8=0xA9 {}
+OSOP: "FL$BACK"	    is imm8=0x21 {}
+OSOP: "FL$BCAT"	    is imm8=0x22 {}
+OSOP: "FL$BDEL"	    is imm8=0x23 {}
+OSOP: "FL$BOPN"	    is imm8=0x24 {}
+OSOP: "FL$BSAV"	    is imm8=0x25 {}
+OSOP: "FL$CATL"	    is imm8=0x26 {}
+OSOP: "FL$COPY"	    is imm8=0x27 {}
+OSOP: "FL$CRET"	    is imm8=0x28 {}
+OSOP: "FL$DELN"	    is imm8=0x29 {}
+OSOP: "FL$ERAS"	    is imm8=0x2A {}
+OSOP: "FL$FDEL"	    is imm8=0xB0 {}
+OSOP: "FL$FFND"	    is imm8=0x2B {}
+OSOP: "FL$FIND"	    is imm8=0x2C {}
+OSOP: "FL$FREC"	    is imm8=0x2D {}
+OSOP: "FL$GETX"	    is imm8=0x98 {}
+OSOP: "FL$NCAT"	    is imm8=0x9D {}
+OSOP: "FL$NEXT"	    is imm8=0x2E {}
+OSOP: "FL$OPEN"	    is imm8=0x2F {}
+OSOP: "FL$PARS"	    is imm8=0x30 {}
+OSOP: "FL$READ"	    is imm8=0x31 {}
+OSOP: "FL$RECT"	    is imm8=0x32 {}
+OSOP: "FL$RENM"	    is imm8=0x33 {}
+OSOP: "FL$RSET"	    is imm8=0x34 {}
+OSOP: "FL$SETP"	    is imm8=0x35 {}
+OSOP: "FL$SIZE"	    is imm8=0x36 {}
+OSOP: "FL$VALX"	    is imm8=0x99 {}
+OSOP: "FL$WCAT"	    is imm8=0x90 {}
+OSOP: "FL$WCPY"	    is imm8=0x91 {}
+OSOP: "FL$WDEL"	    is imm8=0x92 {}
+OSOP: "FL$WFND"	    is imm8=0x93 {}
+OSOP: "FL$WPAR"	    is imm8=0x8F {}
+OSOP: "FL$WRIT"	    is imm8=0x37 {}
+OSOP: "FN$ACOS"	    is imm8=0xAD {}
+OSOP: "FN$ASIN"	    is imm8=0xAC {}
+OSOP: "FN$ATAN"	    is imm8=0x38 {}
+OSOP: "FN$COS"	    is imm8=0x39 {}
+OSOP: "FN$EXP"	    is imm8=0x3A {}
+OSOP: "FN$LN"	    is imm8=0x3B {}
+OSOP: "FN$LOG"	    is imm8=0x3C {}
+OSOP: "FN$MAX"	    is imm8=0x8E {}
+OSOP: "FN$MEAN"	    is imm8=0x8A {}
+OSOP: "FN$MIN"	    is imm8=0x8D {}
+OSOP: "FN$POWR"	    is imm8=0x3D {}
+OSOP: "FN$RND"	    is imm8=0x3E {}
+OSOP: "FN$SIN"	    is imm8=0x3F {}
+OSOP: "FN$SQRT"	    is imm8=0x40 {}
+OSOP: "FN$STD"	    is imm8=0x8C {}
+OSOP: "FN$SUM"	    is imm8=0x89 {}
+OSOP: "FN$TAN"	    is imm8=0x41 {}
+OSOP: "FN$VAR"	    is imm8=0x8B {}
+OSOP: "IT$GVAL"	    is imm8=0x42 {}
+OSOP: "IT$RADD"	    is imm8=0x43 {}
+OSOP: "IT$STRT"	    is imm8=0x44 {}
+OSOP: "IT$TADD"	    is imm8=0x45 {}
+OSOP: "KB$BREK"	    is imm8=0x46 {}
+OSOP: "KB$CONK"	    is imm8=0xB1 {}
+OSOP: "KB$FLSH"	    is imm8=0x47 {}
+OSOP: "KB$GETK"	    is imm8=0x48 {}
+OSOP: "KB$INIT"	    is imm8=0x49 {}
+OSOP: "KB$STAT"	    is imm8=0x4A {}
+OSOP: "KB$TEST"	    is imm8=0x4B {}
+OSOP: "KB$UGET"	    is imm8=0x4C {}
+OSOP: "LG$EDIT"	    is imm8=0xAB {}
+OSOP: "LG$ENTR"	    is imm8=0xAF {}
+OSOP: "LG$NEWP"	    is imm8=0x4D {}
+OSOP: "LG$RLED"	    is imm8=0x4E {}
+OSOP: "LN$STRT"	    is imm8=0x4F {}
+OSOP: "LN$XSTT"	    is imm8=0x9A {}
+OSOP: "MN$1DSP"	    is imm8=0x87 {}
+OSOP: "MN$DISP"	    is imm8=0x50 {}
+OSOP: "MN$TITL"	    is imm8=0x88 {}
+OSOP: "MN$XDSP"	    is imm8=0x86 {}
+OSOP: "MT$BTOF"	    is imm8=0x51 {}
+OSOP: "MT$FADD"	    is imm8=0x52 {}
+OSOP: "MT$FBDC"	    is imm8=0x53 {}
+OSOP: "MT$FBEX"	    is imm8=0x54 {}
+OSOP: "MT$FBGN"	    is imm8=0x55 {}
+OSOP: "MT$FBIN"	    is imm8=0x56 {}
+OSOP: "MT$FDIV"	    is imm8=0x57 {}
+OSOP: "MT$FMUL"	    is imm8=0x58 {}
+OSOP: "MT$FNGT"	    is imm8=0x59 {}
+OSOP: "MT$FSUB"	    is imm8=0x5A {}
+OSOP: "NT$ENTR"	    is imm8=0x9F {}
+OSOP: "PK$PKOF"	    is imm8=0x5B {}
+OSOP: "PK$QADD"	    is imm8=0x5C {}
+OSOP: "PK$RBYT"	    is imm8=0x5D {}
+OSOP: "PK$READ"	    is imm8=0x5E {}
+OSOP: "PK$RWRD"	    is imm8=0x5F {}
+OSOP: "PK$SADD"	    is imm8=0x60 {}
+OSOP: "PK$SAVE"	    is imm8=0x61 {}
+OSOP: "PK$SETP"	    is imm8=0x62 {}
+OSOP: "PK$SKIP"	    is imm8=0x63 {}
+OSOP: "RM$RUNP"	    is imm8=0x64 {}
+OSOP: "TI$ENTR"	    is imm8=0xA4 {}
+OSOP: "TL$ADDI"	    is imm8=0x65 {}
+OSOP: "TL$CPYX"	    is imm8=0x66 {}
+OSOP: "TL$DELI"	    is imm8=0x67 {}
+OSOP: "TL$LSET"	    is imm8=0x80 {}
+OSOP: "TL$RSTR"	    is imm8=0x7F {}
+OSOP: "TL$XXMD"	    is imm8=0x68 {}
+OSOP: "TL$ZZMD"	    is imm8=0x9B {}
+OSOP: "TM$DAYV"	    is imm8=0x69 {}
+OSOP: "TM$DNAM"	    is imm8=0x97 {}
+OSOP: "TM$MNAM"	    is imm8=0xAA {}
+OSOP: "TM$NDYS"	    is imm8=0x95 {}
+OSOP: "TM$TGET"	    is imm8=0x6A {}
+OSOP: "TM$TSET"	    is imm8=0xB3 {}
+OSOP: "TM$UPDT"	    is imm8=0x6B {}
+OSOP: "TM$WAIT"	    is imm8=0x6C {}
+OSOP: "TM$WEEK"	    is imm8=0x96 {}
+OSOP: "UT$CDSP"	    is imm8=0x7E {}
+OSOP: "UT$CMPB"	    is imm8=0xB2 {}
+OSOP: "UT$CPYB"	    is imm8=0x6D {}
+OSOP: "UT$DDSP"	    is imm8=0x6E {}
+OSOP: "UT$DISP"	    is imm8=0x6F {}
+OSOP: "UT$ENTR"	    is imm8=0x70 {}
+OSOP: "UT$FILL"	    is imm8=0x71 {}
+OSOP: "UT$ICPB"	    is imm8=0x72 {}
+OSOP: "UT$ISBF"	    is imm8=0x73 {}
+OSOP: "UT$LEAV"	    is imm8=0x74 {}
+OSOP: "UT$SDIV"	    is imm8=0x75 {}
+OSOP: "UT$SMUL"	    is imm8=0x76 {}
+OSOP: "UT$SORT"	    is imm8=0xA5 {}
+OSOP: "UT$SPLT"	    is imm8=0x77 {}
+OSOP: "UT$UDIV"	    is imm8=0x78 {}
+OSOP: "UT$UMUL"	    is imm8=0x79 {}
+OSOP: "UT$UTOB"	    is imm8=0x7A {}
+OSOP: "UT$WILD"	    is imm8=0x94 {}
+OSOP: "UT$XCAT"	    is imm8=0x7B {}
+OSOP: "UT$XTOB"	    is imm8=0x7C {}
+OSOP: "UT$YSNO"	    is imm8=0x7D {}
+OSOP: "WL$ENTR"	    is imm8=0xA6 {}
+OSOP: "XF$ENTR"	    is imm8=0xA8 {}
+OSOP: "XF$SORT"	    is imm8=0xAE {}
+OSOP: "XT$BAR"	    is imm8=0xA2 {}
+OSOP: "XT$DIRM"	    is imm8=0x9C {}
+OSOP: "XT$ENTR"	    is imm8=0xA1 {}
+
+
 
 ################################################################
 # Macros
@@ -422,7 +611,7 @@ macro complement(op)
 
 macro logicalShiftRight(op)
 {
-        $(C) = op & 1;
+        $(C) = ((op & 1) == 1);
         op = op >> 1;
         $(Z) = (op == 0);
         $(N) = 0;
@@ -695,7 +884,12 @@ macro PushEntireState()
         logicalShiftRight(B);
 }
 
-:LSR OP1    is (op=0x04 | op=0x64 | op=0x74) ... & OP1
+:LSRD 	is op=0x04
+{
+        logicalShiftRight(D);
+}
+
+:LSR OP1    is (op=0x64 | op=0x74) ... & OP1
 {
         logicalShiftRight(OP1);
 }
@@ -1100,6 +1294,7 @@ macro PushEntireState()
         $(C) = B >> 7;
 }
 
+@ifdef H6303
 :SWI    is op=0x3F
 {
         PushEntireState();
@@ -1108,6 +1303,18 @@ macro PushEntireState()
         tmp:2 = $(SWI_VECTOR);
         call [tmp];
 }
+@endif
+
+@ifdef H6303PSION
+:OS OSOP   is op=0x3F ; OSOP
+{
+        PushEntireState();
+        $(I) = 1;
+        $(F) = 1;
+        tmp:2 = $(SWI_VECTOR);
+        call [tmp];
+}
+@endif
 
 ################################################################
 # Opcode 0x80 - 0x8F, immediate addressing
