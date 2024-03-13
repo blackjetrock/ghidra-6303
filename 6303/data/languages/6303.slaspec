@@ -8,4 +8,3 @@
 @include "6303.sinc"
 #@include "6303_push.sinc"
 #@include "6303_pull.sinc"
-@include "6303_exg_tfr.sinc"
