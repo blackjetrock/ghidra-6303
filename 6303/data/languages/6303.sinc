@@ -27,7 +27,7 @@ define register offset=8 size=1 [ CC ];
 #    PC: Program counter
 #    S:  Stack pointer
 #    X:  index register
-define register offset=16 size=2 [ PC X S ];
+define register offset=16 size=2 [ PC X Y U S ];
 
 # define status bits: (See also 8051/z80).
 @define C "CC[0,1]" # C: Carry (or borrow) flag
