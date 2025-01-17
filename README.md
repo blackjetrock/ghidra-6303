@@ -2,7 +2,7 @@
 Ghidra 6303 support and 6303 projects
 =====================================
 
-There is support for the 6303 processor (as used in Psion organisers as well as other devices) in this repository. Put the 6303 directory into your Ghidra Processors directory and the 6303 support should appear when setting up a new project. The 'extra' 6303 instructions appear in the disassembly but I haven't added the procedural part so no decompilation will appear.
+There is support for the 6303 processor (as used in Psion organisers as well as other devices) in this repository. Put the 6303 directory into your Ghidra/Processors directory and the 6303 support should appear when setting up a new project. The 'extra' 6303 instructions appear in the disassembly but I haven't added the procedural part so no decompilation will appear.
 
 Psion Organiser
 ===============
